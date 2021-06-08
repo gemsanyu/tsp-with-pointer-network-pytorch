@@ -1,3 +1,4 @@
+import click
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
@@ -13,7 +14,7 @@ DEVICE = torch.device("cpu")
 
 @click.command()
 @click.option('--max-epoch', default=10000, help="Number of epoch", type=int)
-@click.option('--max-epoch', default=128, help="Size of batch per iteration", type=int)
+@click.option('--batch-size', default=128, help="Size of batch per iteration", type=int)
 @click.option('--min-graph-size', default=10, help="THe smallest size of training graph", type=int)
 @click.option('--max-graph-size', default=50, help="THe smallest size of training graph", type=int)
 @click.option('--num-neurons', default=32, help="Number of neurons for every layer, except critic", type=int)
@@ -29,6 +30,7 @@ def train(max_epoch, batch_size, min_graph_size, max_graph_size, num_neurons, cr
 
     device = DEVICE
 
+    print(learnable_first_input)
     # Prepare checkpoint directory and tensorboard directory
     checkpoint_root="checkpoint"
     checkpoint_dir=pathlib.Path(".")/checkpoint_root/title

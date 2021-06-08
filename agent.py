@@ -16,6 +16,7 @@ class Agent(torch.nn.Module):
                  critic_num_neurons=20,
                  learning_rate=3e-4,
                  max_grad=10,
+                 learnable_first_input=False,
                  device=cpu_device):
 
         super(Agent, self).__init__()
@@ -23,15 +24,12 @@ class Agent(torch.nn.Module):
         self.device = device
         self.num_features = 2
         self.max_grad = max_grad
-        self.actor = Actor(num_features=2, num_neurons=num_neurons,
+        self.actor = Actor(num_features=2, num_neurons=num_neurons, learnable_first_input=learnable_first_input,
                            pointer_num_layers=2, device=device)
-        self.critic = Critic(num_features=2, encoder_num_neurons=num_neurons,
-                             critic_num_neurons=critic_num_neurons,
+        self.critic = Critic(num_features=2, encoder_num_neurons=num_neurons, critic_num_neurons=critic_num_neurons,
                              device=device, num_layers=critic_num_layers)
-        self.actor_optimizer = torch.optim.Adam(self.actor.parameters(),
-                                                lr=learning_rate)
-        self.critic_optimizer = torch.optim.Adam(self.critic.parameters(),
-                                                 lr=learning_rate)
+        self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=learning_rate)
+        self.critic_optimizer = torch.optim.Adam(self.critic.parameters(), lr=learning_rate)
         self.to(self.device)
 
     def forward(self, raw_features, distance_matrix, is_training=True):
@@ -71,7 +69,7 @@ class Agent(torch.nn.Module):
 
         self.critic_optimizer.zero_grad()
         critic_loss.backward()
-        torch.nn.utils.clip_grad_norm(self.critic.parameters(), self.max_grad)
+        torch.nn.utils.clip_grad_norm_(self.critic.parameters(), self.max_grad)
         self.critic_optimizer.step()
 
         return actor_loss.data, critic_loss.data

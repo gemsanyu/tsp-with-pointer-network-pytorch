@@ -3,16 +3,19 @@ from pointer import Pointer
 from encoder import Encoder
 
 class Actor(torch.nn.Module):
-    def __init__(self, num_features, num_neurons, pointer_num_layers, device):
+    def __init__(self, num_features, num_neurons, pointer_num_layers, learnable_first_input, device):
         super(Actor, self).__init__()
 
         self.num_features = num_features
         self.num_neurons = num_neurons
         self.device = device
+        self.learnable_first_input = learnable_first_input
 
         self.static_encoder = Encoder(num_features, num_neurons, device)
         self.decoder_input_encoder = Encoder(num_features, num_neurons, device)
         self.pointer = Pointer(num_neurons, pointer_num_layers, device)
+        self.first_input = torch.nn.Parameter(torch.randn(size=(1, 1, num_features), dtype=torch.float32,
+                                                          device=device))
         self.to(device)
 
     """
@@ -28,8 +31,12 @@ class Actor(torch.nn.Module):
         # First node always 0
         # the tour will not be started/ended by 0, because it's obvious
         # and to make the length similar to tour_logp
-        decoder_input = raw_features[:, 0, :]
-        decoder_input = decoder_input.unsqueeze(1)
+        if self.learnable_first_input:
+            decoder_input = self.first_input.expand(batch_size, 1, self.num_features)
+        else:
+            decoder_input = raw_features[:, 0, :]
+            decoder_input = decoder_input.unsqueeze(1)
+
         features = self.static_encoder(raw_features)
         tour_idx = torch.zeros(size=(batch_size, num_nodes-1),
                                device=self.device)
