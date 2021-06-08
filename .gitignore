@@ -1,4 +1,4 @@
-results/*
+checkpoint/*
 runs/*
 .ipynb_checkpoints/*
 __pycache__/*
