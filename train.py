@@ -23,10 +23,14 @@ DEVICE = torch.device("cpu")
 @click.option('--pointer-num-layers', default=2, help="Number of layers in Pointer's GRU", type=int)
 @click.option('--learning-rate', default=3e-4, help="optimizer learning rate", type=float)
 @click.option('--max-grad', default=10, help="max gradient for gradient clipping", type=float)
+@click.option('--max-eps', default=1, help="max epsilon", type=float)
+@click.option('--min-eps', default=0.1, help="min epsilon", type=float)
+@click.option('--eps-decay', default=0.995, help="epsilon decay", type=float)
 @click.option('--learnable-first-input', default=False, help="wether use parameters or node 0 as first input", type=bool)
-@click.option('--title', default="random_num_nodes", help="title for saving and tracking", type=str)
+@click.option('--title', default="epsilon_not_learnable", help="title for saving and tracking", type=str)
 def train(max_epoch, batch_size, min_graph_size, max_graph_size, num_neurons, critic_num_neurons,
-          critic_num_layers, pointer_num_layers, learning_rate, max_grad, learnable_first_input, title):
+          critic_num_layers, pointer_num_layers, learning_rate, max_grad,
+          max_eps, min_eps, eps_decay, learnable_first_input, title):
 
     device = DEVICE
 
@@ -48,6 +52,9 @@ def train(max_epoch, batch_size, min_graph_size, max_graph_size, num_neurons, cr
                   critic_num_neurons=critic_num_neurons,
                   learning_rate=learning_rate,
                   max_grad=max_grad,
+                  eps=max_eps,
+                  min_eps=min_eps,
+                  eps_decay=eps_decay,
                   learnable_first_input=learnable_first_input,
                   device=device)
 

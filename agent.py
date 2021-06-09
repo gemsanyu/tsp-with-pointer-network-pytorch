@@ -16,6 +16,9 @@ class Agent(torch.nn.Module):
                  critic_num_neurons=20,
                  learning_rate=3e-4,
                  max_grad=10,
+                 eps=None,
+                 min_eps=None,
+                 eps_decay=None,
                  learnable_first_input=False,
                  device=cpu_device):
 
@@ -25,7 +28,8 @@ class Agent(torch.nn.Module):
         self.num_features = 2
         self.max_grad = max_grad
         self.actor = Actor(num_features=2, num_neurons=num_neurons, learnable_first_input=learnable_first_input,
-                           pointer_num_layers=2, device=device)
+                           pointer_num_layers=2, eps=eps, min_eps=min_eps, eps_decay=eps_decay,
+                           device=device)
         self.critic = Critic(num_features=2, encoder_num_neurons=num_neurons, critic_num_neurons=critic_num_neurons,
                              device=device, num_layers=critic_num_layers)
         self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=learning_rate)

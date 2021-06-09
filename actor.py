@@ -1,10 +1,19 @@
+import numpy as np
 import torch
 from pointer import Pointer
 from encoder import Encoder
 
+CPU_DEVICE = torch.device("cpu")
+
 class Actor(torch.nn.Module):
-    def __init__(self, num_features, num_neurons, pointer_num_layers, learnable_first_input, device):
+    def __init__(self, num_features, num_neurons, pointer_num_layers,
+                 learnable_first_input, eps=None, min_eps=None, eps_decay=None,
+                 device=CPU_DEVICE):
         super(Actor, self).__init__()
+
+        self.eps = eps
+        self.min_eps = min_eps
+        self.eps_decay = eps_decay
 
         self.num_features = num_features
         self.num_neurons = num_neurons
@@ -63,7 +72,17 @@ class Actor(torch.nn.Module):
                 # https://github.com/pemami4911/neural-combinatorial-rl-pytorch/issues/5
                 chosen_nodes = dist.sample()
                 while not torch.gather(mask, 1, chosen_nodes.data.unsqueeze(1)).byte().all():
-                    chosen_nodes = m.sample()
+                    chosen_nodes = dist.sample()
+
+                # epsilon-greedy for training
+                if self.eps is not None and np.random.rand() < self.eps:
+                    dummy_probs = probs.detach().clone()
+                    dummy_probs[dummy_probs>0] = 1/(num_nodes-1-i)
+                    dummy_dist = torch.distributions.Categorical(dummy_probs)
+                    chosen_nodes = dummy_dist.sample()
+                    while not torch.gather(mask, 1, chosen_nodes.data.unsqueeze(1)).byte().all():
+                        chosen_nodes = dummy_dist.sample()
+
                 logp = dist.log_prob(chosen_nodes)
                 # print(logp)
             else:
@@ -83,5 +102,6 @@ class Actor(torch.nn.Module):
             tour_idx[:, i] = chosen_nodes.data
             tour_logp[:, i] = logp
             i = i + 1
+            self.eps = max(self.eps*self.eps_decay, self.min_eps)
 
         return tour_idx, tour_logp
