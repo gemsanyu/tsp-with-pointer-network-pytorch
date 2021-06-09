@@ -102,6 +102,6 @@ class Actor(torch.nn.Module):
             tour_idx[:, i] = chosen_nodes.data
             tour_logp[:, i] = logp
             i = i + 1
-            self.eps = max(self.eps*self.eps_decay, self.min_eps)
-
+            
+        self.eps = max(self.eps*self.eps_decay, self.min_eps)
         return tour_idx, tour_logp
