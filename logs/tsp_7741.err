@@ -1,0 +1,29 @@
+2021-06-08 18:51:01.574349: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: :/usr/local/TensorRT-6.0.1.5/lib/:/usr/gdrcopy/lib64:/usr/gdcropy/include:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs:/usr/local/openmpi/lib:/usr/local/magma/lib:/usr/local/magma/include
+2021-06-08 18:51:01.574366: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+2021-06-08 18:51:01.574855: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: :/usr/local/TensorRT-6.0.1.5/lib/:/usr/gdrcopy/lib64:/usr/gdcropy/include:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs:/usr/local/openmpi/lib:/usr/local/magma/lib:/usr/local/magma/include
+2021-06-08 18:51:01.574868: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+2021-06-08 18:51:01.726617: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: :/usr/local/TensorRT-6.0.1.5/lib/:/usr/gdrcopy/lib64:/usr/gdcropy/include:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs:/usr/local/openmpi/lib:/usr/local/magma/lib:/usr/local/magma/include
+2021-06-08 18:51:01.726636: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+
+NOTE: Using experimental fast data loading logic. To disable, pass
+    "--load_fast=false" and report issues on GitHub. More details:
+    https://github.com/tensorflow/tensorboard/issues/4784
+
+Serving TensorBoard on localhost; to expose to the network, use a proxy or pass --bind_all
+TensorBoard 2.5.0 at http://localhost:6006/ (Press CTRL+C to quit)
+WARNING:tensorflow:FailedPreconditionError: checkpoint; Is a directory
+W0608 18:53:38.656776 140454473225984 checkpoint_management.py:295] FailedPreconditionError: checkpoint; Is a directory
+WARNING:tensorflow:runs/../checkpoint: Checkpoint ignored
+W0608 18:53:38.656929 140454473225984 checkpoint_management.py:296] runs/../checkpoint: Checkpoint ignored
+WARNING:tensorflow:FailedPreconditionError: checkpoint; Is a directory
+W0609 00:22:59.926649 140454473225984 checkpoint_management.py:295] FailedPreconditionError: checkpoint; Is a directory
+WARNING:tensorflow:runs/../checkpoint: Checkpoint ignored
+W0609 00:22:59.926755 140454473225984 checkpoint_management.py:296] runs/../checkpoint: Checkpoint ignored
+WARNING:tensorflow:FailedPreconditionError: checkpoint; Is a directory
+W0609 00:48:46.428597 140454490273536 checkpoint_management.py:295] FailedPreconditionError: checkpoint; Is a directory
+WARNING:tensorflow:runs/../checkpoint: Checkpoint ignored
+W0609 00:48:46.428705 140454490273536 checkpoint_management.py:296] runs/../checkpoint: Checkpoint ignored
+WARNING:tensorflow:FailedPreconditionError: checkpoint; Is a directory
+W0609 01:42:50.206514 140454438868736 checkpoint_management.py:295] FailedPreconditionError: checkpoint; Is a directory
+WARNING:tensorflow:runs/../checkpoint: Checkpoint ignored
+W0609 01:42:50.206617 140454438868736 checkpoint_management.py:296] runs/../checkpoint: Checkpoint ignored

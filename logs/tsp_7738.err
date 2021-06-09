@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+Traceback (most recent call last):
+  File "train.py", line 1, in <module>
+  File "train.py", line 1, in <module>
+    import click
+    import click
+ModuleNotFoundError: No module named 'click'
+ModuleNotFoundError: No module named 'click'
+srun: error: komputasi08: task 0: Exited with exit code 1
+srun: error: komputasi08: task 0: Exited with exit code 1
+2021-06-08 18:43:15.194237: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory; LD_LIBRARY_PATH: :/usr/local/TensorRT-6.0.1.5/lib/:/usr/gdrcopy/lib64:/usr/gdcropy/include:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs:/usr/local/openmpi/lib:/usr/local/magma/lib:/usr/local/magma/include
+2021-06-08 18:43:15.194308: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+
+NOTE: Using experimental fast data loading logic. To disable, pass
+    "--load_fast=false" and report issues on GitHub. More details:
+    https://github.com/tensorflow/tensorboard/issues/4784
+
+Serving TensorBoard on localhost; to expose to the network, use a proxy or pass --bind_all
+TensorBoard 2.5.0 at http://localhost:6006/ (Press CTRL+C to quit)
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 7738.1 ON komputasi08 CANCELLED AT 2021-06-08T18:46:01 ***
+TensorBoard caught SIGTERM; exiting...
+slurmstepd: error: *** JOB 7738 ON komputasi08 CANCELLED AT 2021-06-08T18:46:01 ***
