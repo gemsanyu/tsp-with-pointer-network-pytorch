@@ -24,7 +24,7 @@ DEVICE = torch.device("cpu")
 @click.option('--learning-rate', default=3e-4, help="optimizer learning rate", type=float)
 @click.option('--max-grad', default=10, help="max gradient for gradient clipping", type=float)
 @click.option('--learnable-first-input', default=False, help="wether use parameters or node 0 as first input", type=bool)
-@click.option('--title', default="not_learnable", help="title for saving and tracking", type=str)
+@click.option('--title', default="random_num_nodes", help="title for saving and tracking", type=str)
 def train(max_epoch, batch_size, min_graph_size, max_graph_size, num_neurons, critic_num_neurons,
           critic_num_layers, pointer_num_layers, learning_rate, max_grad, learnable_first_input, title):
 
@@ -57,10 +57,17 @@ def train(max_epoch, batch_size, min_graph_size, max_graph_size, num_neurons, cr
     # # then save the model
     best_average_improvement = -999
     n_iter = max_graph_size-min_graph_size+1
+
+    # we're gonna shuffle the num_nodes per epoch
+    # to prevent the agent correlating the pattern of num_nodes to action
+    # in terms of optimizing right(?)
+    num_nodes_list = torch.arange((max_graph_size-min_graph_size+1),
+                                 dtype=torch.long) + min_graph_size
+
     i = 0
     for epoch in range(max_epoch):
         total_improvement = 0.
-        for num_nodes in range(min_graph_size, max_graph_size+1):
+        for num_nodes in num_nodes_list:
             coords, W = generate_graph(batch_size, num_nodes, device=device)
             tour_idx, tour_logp = agent.forward(raw_features=coords,
                                                      distance_matrix=W,
@@ -89,6 +96,9 @@ def train(max_epoch, batch_size, min_graph_size, max_graph_size, num_neurons, cr
             best_average_improvement = total_improvement/n_iter
             agent.save(checkpoint_dir,suffix=str(epoch+1))
 
+        # randomize num_nodes_list
+        num_nodes_list = torch.randperm((max_graph_size-min_graph_size+1),
+                                         dtype=torch.long) + min_graph_size
 
 if __name__=='__main__':
     train()
