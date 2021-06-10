@@ -4,6 +4,8 @@ import torch
 from actor import Actor
 from critic import Critic
 
+from tsp import get_greedy_tour
+
 cpu_device = torch.device("cpu")
 
 
@@ -41,7 +43,7 @@ class Agent(torch.nn.Module):
 
         return tour_idx, tour_logp
 
-    def optimize(self, raw_features, tour_logp, tour_length):
+    def optimize(self, raw_features, W, tour_logp, tour_length):
         """
             Calculate advantage = (tour_length - critic_length)
             if tour_length > critic_length, then advantage > 0
@@ -54,12 +56,22 @@ class Agent(torch.nn.Module):
             and because of the critic's weights are initiated
             near zero, then it will be minimized
         """
+
+        # We will get lower bound for the possible distance
+        # by using the greedy tour's length
+        greedy_tour, greedy_tour_length = get_greedy_tour(W, device=self.device)
+
         critic_length = self.critic(raw_features)
         critic_length = critic_length.squeeze(1)
-        advantage = (tour_length - critic_length)
 
-        actor_loss = torch.mean(advantage.detach()*tour_logp.sum(dim=1))
-        critic_loss = torch.mean(advantage**2)
+        actor_lb = torch.minimum(critic_length, greedy_tour_length)
+        actor_advantage = (tour_length - actor_lb)
+        actor_loss = torch.mean(actor_advantage.detach()*tour_logp.sum(dim=1))
+
+        critic_lb = torch.minimum(tour_length, greedy_tour_length)
+        critic_advantage = (critic_lb - critic_length)
+        critic_loss = torch.mean(critic_advantage**2)
+
 
         # Clear previous grads, and optimize
         self.actor_optimizer.zero_grad()

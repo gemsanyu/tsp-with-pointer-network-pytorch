@@ -24,7 +24,7 @@ DEVICE = torch.device("cpu")
 @click.option('--learning-rate', default=3e-4, help="optimizer learning rate", type=float)
 @click.option('--max-grad', default=10, help="max gradient for gradient clipping", type=float)
 @click.option('--learnable-first-input', default=False, help="wether use parameters or node 0 as first input", type=bool)
-@click.option('--title', default="random_num_nodes", help="title for saving and tracking", type=str)
+@click.option('--title', default="with_greedy", help="title for saving and tracking", type=str)
 def train(max_epoch, batch_size, min_graph_size, max_graph_size, num_neurons, critic_num_neurons,
           critic_num_layers, pointer_num_layers, learning_rate, max_grad, learnable_first_input, title):
 
@@ -73,7 +73,7 @@ def train(max_epoch, batch_size, min_graph_size, max_graph_size, num_neurons, cr
                                                      distance_matrix=W,
                                                      is_training=True)
             tour_length = get_tour_length_vectorized(tour_idx, W)
-            actor_loss, critic_loss = agent.optimize(coords, tour_logp, tour_length)
+            actor_loss, critic_loss = agent.optimize(coords, W, tour_logp, tour_length)
             greedy_tour_idx, greedy_tour_length = get_greedy_tour(W, mode="min",
                                                                   device=device)
             random_tour_idx, random_tour_length = get_greedy_tour(W, mode="random",

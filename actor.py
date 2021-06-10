@@ -65,7 +65,6 @@ class Actor(torch.nn.Module):
                 while not torch.gather(mask, 1, chosen_nodes.data.unsqueeze(1)).byte().all():
                     chosen_nodes = m.sample()
                 logp = dist.log_prob(chosen_nodes)
-                # print(logp)
             else:
                 prob, chosen_nodes = torch.max(probs, 1)
                 logp = prob.log()
