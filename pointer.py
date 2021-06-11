@@ -7,6 +7,7 @@ from attention import Attention
     and also the last hidden feature from the RNN (GRU)
     Assuming the input to the GRU is the HIDDEN FEATURE (ENCODED) state of the previously selected node
     in this case ENCODE(coords)
+    3*num_neurons = 1 from context, 2 from static+dynamic features 1 each
 """
 
 class Pointer(torch.nn.Module):
@@ -18,7 +19,7 @@ class Pointer(torch.nn.Module):
         self.v = torch.nn.Parameter(torch.randn((1, 1, num_neurons),
                                                 device=device, requires_grad=True))
 
-        self.W = torch.nn.Parameter(torch.randn((1, num_neurons, 2*num_neurons),
+        self.W = torch.nn.Parameter(torch.randn((1, num_neurons, 4*num_neurons),
                                                 device=device, requires_grad=True))
 
         if num_layers == 1:
@@ -30,7 +31,8 @@ class Pointer(torch.nn.Module):
         self.drop_hh = torch.nn.Dropout(p=dropout)
 
     """
-        Features = Encoded Features of all node (batch_size, N, num_neurons)
+        Features = Encoded Features of all node (batch_size, N, 2*num_neurons)
+        Features = Concatenated static;dynamic embedded features, thus 2*num_neurons
         Decoder_input = input of GRU, currently is the encoded feature of the previously selected node (batch_size, num_neurons)
         Last_pointer_hidden_state = literally last hidden state from the previous node selection (batch_size, num_neurons)
     """

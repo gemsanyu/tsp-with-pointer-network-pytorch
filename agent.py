@@ -9,7 +9,8 @@ cpu_device = torch.device("cpu")
 
 class Agent(torch.nn.Module):
     def __init__(self,
-                 num_features=2,
+                 num_static_features=2,
+                 num_dynamic_features=2,
                  num_neurons=32,
                  critic_num_layers=2,
                  pointer_num_layers=2,
@@ -22,30 +23,39 @@ class Agent(torch.nn.Module):
         super(Agent, self).__init__()
 
         self.device = device
-        self.num_features = 2
+        self.num_static_features = 2
         self.max_grad = max_grad
-        self.actor = Actor(num_features=2, num_neurons=num_neurons, learnable_first_input=learnable_first_input,
-                           pointer_num_layers=2, device=device)
-        self.critic = Critic(num_features=2, encoder_num_neurons=num_neurons, critic_num_neurons=critic_num_neurons,
-                             device=device, num_layers=critic_num_layers)
-        self.actor_optimizer = torch.optim.Adam(self.actor.parameters(), lr=learning_rate)
-        self.critic_optimizer = torch.optim.Adam(self.critic.parameters(), lr=learning_rate)
+        self.actor = Actor(num_static_features=num_static_features,
+                           num_dynamic_features=num_dynamic_features,
+                           num_neurons=num_neurons,
+                           learnable_first_input=learnable_first_input,
+                           pointer_num_layers=pointer_num_layers,
+                           device=device)
+        self.critic = Critic(num_features=num_static_features,
+                             encoder_num_neurons=num_neurons,
+                             critic_num_neurons=critic_num_neurons,
+                             device=device,
+                             num_layers=critic_num_layers)
+        self.actor_optimizer = torch.optim.Adam(self.actor.parameters(),
+                                                lr=learning_rate)
+        self.critic_optimizer = torch.optim.Adam(self.critic.parameters(),
+                                                 lr=learning_rate)
         self.to(self.device)
 
     def forward(self, raw_features, distance_matrix, is_training=True):
         if not is_training:
             with torch.no_grad():
-                tour_idx, tour_logp = self.actor(raw_features)
+                tour_idx, tour_logp = self.actor(raw_features, distance_matrix)
         else:
-            tour_idx, tour_logp = self.actor(raw_features)
+            tour_idx, tour_logp = self.actor(raw_features, distance_matrix)
 
         return tour_idx, tour_logp
 
     def optimize(self, raw_features, tour_logp, tour_length):
         """
             Calculate advantage = (tour_length - critic_length)
-            if tour_length > critic_length, then advantage > 0
-            , the bigger the tour_length, the bigger advantage,
+            if tour_length > critic_length, then advantage > 0,
+            the bigger the tour_length, the bigger advantage,
             the bigger the advantage, the bigger the loss,
             remember This is intended, because
             the optimizer (ADAM, SGD, etc) is supposed to minimize loss
